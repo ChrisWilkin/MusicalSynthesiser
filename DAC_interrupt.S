@@ -52,14 +52,14 @@ DAC_Setup:
 DAC_Int_Hi:					; Determine which oscillator triggered
 
 	btfss	CCP4IF			; check that this is timer1 interrupt
-	bra		osc2update
-	bcf		CCP4IF			; Reset timer
+	bra	osc2update
+	bcf	CCP4IF			; Reset timer
 	movff	wf1, wf_compare	; This is done so the same 'read_table' command can be used for all 3 oscillators
 	movlw	00111101B		; 00111100B is max pot value - if greater than this
 	cpfslt	fine_tune1, A 	; then we want no detune, skip entirely
-	bra		ft1skip
+	bra	ft1skip
 	decfsz	ft_hold1, A 	; Decrement detune counter
-	bra		ft1skip
+	bra	ft1skip
 	incf	osc1_l, F, A 	; Increment oscillator by 1 extra detune counter reaches zero
 	movff	fine_tune1, ft_hold1 ; If detune counter reaches zero, reset it
 ft1skip:
@@ -72,14 +72,14 @@ ft1skip:
 	
 osc2update:
 	btfss	CCP5IF
-	bra		osc3update
-	bcf		CCP5IF
+	bra	osc3update
+	bcf	CCP5IF
 	movff	wf2, wf_compare
 	movlw	00111101B	
 	cpfslt	fine_tune2, A
-	bra		ft2skip
+	bra	ft2skip
 	decfsz	ft_hold2, A
-	bra		ft2skip
+	bra	ft2skip
 	incf	osc2_l, F, A
 	movff	fine_tune2, ft_hold2	
 ft2skip:
@@ -92,8 +92,8 @@ ft2skip:
 	
 osc3update:					; The code for updating the third oscillator has no detune settings
 	btfss	CCP6IF
-	bra		osc_end			; If interrupt is none of three oscillators, perform no operation
-	bcf		CCP6IF
+	bra	osc_end			; If interrupt is none of three oscillators, perform no operation
+	bcf	CCP6IF
 	movff	wf3, wf_compare
 	movf	oct3, W, A
 	addwf	osc3_l, F, A			
@@ -107,12 +107,12 @@ osc_end:
 
 DAC_Update:	
 	movff	osc1_val, osc1_add
-	bcf		osc1_add, 0, A
+	bcf	osc1_add, 0, A
 	rrncf	osc1_add, A
 	movf	vol1, W, A
 	mulwf	osc1_add, A
 	movff	PRODL, osc1_add
-	bcf		osc1_add, 0, A
+	bcf	osc1_add, 0, A
 	rrncf	osc1_add, A
 	
 	movff	osc2_val, osc2_add
@@ -121,14 +121,14 @@ DAC_Update:
 	movf	vol2, W, A
 	mulwf	osc2_add, A
 	movff	PRODL, osc2_add
-	bcf		osc2_add, 0, A
+	bcf	osc2_add, 0, A
 	rrncf	osc2_add, A
     
 	clrf	PORTC, A
 	movf	osc3_val, W, A
 	addwf	osc1_add, W, A
 	addwf	osc2_add, W, A
-	bnc		finish_update	; if the addition goes past 255, we set it to 255 to avoid looping to zero
+	bnc	finish_update	; if the addition goes past 255, we set it to 255 to avoid looping to zero
 	movlw	0xFF
 
 finish_update:	
