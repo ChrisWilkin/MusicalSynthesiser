@@ -1,0 +1,2 @@
+Code for a synthesizer based on the 8-bit PIC-18F87K22 microprocessor.
+Written by Chris Wilkin and Finlay Osman Sellwood, with some elements modified from https://github.com/ImperialCollegeLondon/MicroprocessorsLab where specified.
