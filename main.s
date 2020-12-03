@@ -93,3 +93,47 @@ start:
 	call	start_keypad ; Starts polling the keypad (and other inputs)
 	bra	start
 
+read_table:
+	movlw	00000001B
+	cpfsgt	wf_compare, A
+	bra	select_sin
+	movlw	00000010B
+	cpfsgt	wf_compare, A
+	bra	select_tri
+	movlw	00000100B
+	cpfsgt	wf_compare, A
+	bra	select_squ
+	bra	select_saw	;no other options
+	
+select_sin:  
+	movf	wav1_u, W,  A	; address of data in PM
+	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
+	movf	wav1_h, W, A	; address of data in PM
+	movwf	TBLPTRH, A		; load high byte to TBLPTRH
+	bra	update_DAC
+	
+select_tri:  
+	movf	wav2_u, W,  A	; address of data in PM
+	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
+	movf	wav2_h, W, A	; address of data in PM
+	movwf	TBLPTRH, A		; load high byte to TBLPTRH
+	bra	update_DAC
+	
+select_squ:  
+	movf	wav3_u, W,  A	; address of data in PM
+	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
+	movf	wav3_h, W, A	; address of data in PM
+	movwf	TBLPTRH, A		; load high byte to TBLPTRH
+	bra	update_DAC
+	
+select_saw:  
+	movf	wav4_u, W,  A	; address of data in PM
+	movwf	TBLPTRU, A		; load upper bits to TBLPTRU
+	movf	wav4_h, W, A	; address of data in PM
+	movwf	TBLPTRH, A		; load high byte to TBLPTRH
+	bra	update_DAC
+	
+update_DAC:	
+	tblrd
+	movff	TABLAT, transfer
+	return
